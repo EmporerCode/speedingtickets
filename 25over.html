@@ -17,8 +17,8 @@
     </div>
     <div>
        <ul class="nav navbar-nav">
-           <li class="active"><a href="index.html">All Tickets</a></li>
-           <li><a href="25over.html">25mph or move over</a></li>
+           <li><a href="index.html">All Tickets</a></li>
+           <li class="active"><a href="25over.html">25mph or move over</a></li>
        </ul>
     </div>
 
@@ -26,7 +26,7 @@
 
 <div id="ticketApp">
 
-     <h2>Tickets July 4, 2014, Minneapolis/St. Paul</h2>
+     <h2>Tickets July 4, 2014, Minneapolis/St. Paul, 25mph or more over the limit</h2>
           
           <table class="table table-bordered table-striped">
               <tr>
@@ -36,7 +36,7 @@
                   <th>MPH Over</th>
                   <th>Violator Sex</th>
               </tr>
-              <tr v-for = "ticket in tickets">
+              <tr v-for = "ticket in filteredTickets">
                   <td>{{ticket.tid}}</td>
                   <td>{{ticket.stop_time}}</td>
                   <td>{{ticket.posted_speed}}</td>
@@ -52,7 +52,7 @@
        let app = Vue.createApp({
             data() {     
                 return {
-                    tickets: [],          
+                    filteredTickets: [],          
                 }
             
             },
@@ -63,10 +63,19 @@
                 async getData() {
                     const response = await fetch('tickets1.json')
                     this.tickets = await response.json()
-                         
-                },
+                    this.filteredTickets = this.tickets.filter(filteredTickets);
+                    //console.log(this.filteredTickets)
+                    function filteredTickets(t) {
+                        if ((t.actual_speed - t.posted_speed) > 25) {
+                            return true
+                        }
+                        else {
+                            return false
+                        }    
+                    }
+                }
             }
-          })
+        })
       
       app.mount('#ticketApp')   
 		  
